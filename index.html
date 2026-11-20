@@ -1,0 +1,348 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+<meta charset="UTF-8"> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+<title>Legal Sphere - Consultation Form</title> 
+<style> 
+    * { 
+        box-sizing: border-box; 
+    } 
+    body { 
+        font-family: Arial, sans-serif; 
+        background: #eef1f6; 
+        margin: 0; 
+        padding: 20px; 
+    } 
+    .container { 
+        max-width: 520px; 
+        margin: 30px auto; 
+        background: #ffffff; 
+        padding: 25px 30px; 
+        border-top: 6px solid #1f3a68; 
+        border-radius: 6px; 
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15); 
+    } 
+    h1 { 
+        text-align: center; 
+        color: #1f3a68; 
+        margin: 0; 
+    } 
+    .tagline { 
+        text-align: center; 
+        color: #555; 
+        margin: 5px 0 20px; 
+        font-size: 14px; 
+    } 
+    label { 
+        display: block; 
+        margin-top: 14px; 
+        font-weight: bold; 
+        font-size: 14px; 
+    } 
+    input[type="text"], 
+    input[type="email"], 
+    input[type="tel"], 
+    input[type="date"], 
+    select, 
+    textarea { 
+        width: 100%; 
+        padding: 9px; 
+        margin-top: 5px; 
+        border: 2px solid #bbb; 
+        border-radius: 4px;  
+ 
+        font-size: 14px; 
+    } 
+    textarea { 
+        height: 90px; 
+        resize: vertical; 
+    } 
+    .valid { 
+        border-color: #2e8b57 !important; 
+    } 
+    .invalid { 
+        border-color: #d93025 !important; 
+    } 
+    .error { 
+        color: #d93025; 
+        font-size: 12px; 
+        min-height: 16px; 
+        margin-top: 3px; 
+    } 
+    .counter { 
+        font-size: 12px; 
+        color: #666; 
+        text-align: right; 
+    } 
+    .consent { 
+        margin-top: 14px; 
+        font-size: 14px; 
+    } 
+    .consent input { 
+        margin-right: 6px; 
+    } 
+    button { 
+        width: 100%; 
+        margin-top: 18px; 
+        padding: 11px; 
+        background: #1f3a68; 
+        color: #fff; 
+        border: none; 
+        border-radius: 4px; 
+        font-size: 16px; 
+        cursor: pointer; 
+    } 
+    button:hover { 
+        background: #16294b; 
+    } 
+    #resetBtn { 
+        background: #777; 
+        margin-top: 8px; 
+    } 
+    #resetBtn:hover { 
+        background: #555; 
+    } 
+    #result { 
+        display: none; 
+        margin-top: 20px; 
+        padding: 15px; 
+        background: #e8f5ec; 
+        border-left: 5px solid #2e8b57;  
+ 
+        border-radius: 4px; 
+        font-size: 14px; 
+    } 
+    #result p { 
+        margin: 5px 0; 
+    } 
+</style> 
+</head> 
+<body> 
+ 
+<div class="container"> 
+    <h1>LEGAL SPHERE</h1> 
+    <p class="tagline">Legal Advisory and Documentation</p> 
+ 
+    <form id="legalForm" novalidate> 
+ 
+        <label for="fullName">Full Name</label> 
+        <input type="text" id="fullName" placeholder="Enter your full name"> 
+        <div class="error" id="nameError"></div> 
+ 
+        <label for="email">Email</label> 
+        <input type="email" id="email" placeholder="example@gmail.com"> 
+        <div class="error" id="emailError"></div> 
+ 
+        <label for="phone">Phone Number</label> 
+        <input type="tel" id="phone" placeholder="10 digit mobile number"> 
+        <div class="error" id="phoneError"></div> 
+ 
+        <label for="service">Service Required</label> 
+        <select id="service"> 
+            <option value="">-- Select a service --</option> 
+            <option value="Legal Advisory">Legal Advisory</option> 
+            <option value="Rental Agreement">Rental Agreement Drafting</option> 
+            <option value="Affidavit">Affidavit Preparation</option> 
+            <option value="Will">Will Documentation</option> 
+            <option value="Business Contract">Business Contract</option> 
+            <option value="Property Documents">Property Documents</option> 
+        </select> 
+        <div class="error" id="serviceError"></div> 
+ 
+        <label for="date">Preferred Consultation Date</label> 
+        <input type="date" id="date"> 
+        <div class="error" id="dateError"></div> 
+ 
+        <label for="details">Describe Your Legal Issue</label> 
+        <textarea id="details" placeholder="Write briefly about your issue"></textarea> 
+        <div class="counter" id="counter">0 / 200</div> 
+        <div class="error" id="detailsError"></div> 
+ 
+        <div class="consent"> 
+            <input type="checkbox" id="consent"> 
+            <span>I agree that the details given are true.</span> 
+        </div> 
+        <div class="error" id="consentError"></div> 
+ 
+        <button type="submit">Submit Request</button> 
+        <button type="button" id="resetBtn">Reset Form</button>  
+ 
+    </form> 
+ 
+    <div id="result"></div> 
+</div> 
+ 
+<script> 
+    const form = document.getElementById("legalForm"); 
+    const fullName = document.getElementById("fullName"); 
+    const email = document.getElementById("email"); 
+    const phone = document.getElementById("phone"); 
+    const service = document.getElementById("service"); 
+    const dateInput = document.getElementById("date"); 
+    const details = document.getElementById("details"); 
+    const consent = document.getElementById("consent"); 
+    const counter = document.getElementById("counter"); 
+    const result = document.getElementById("result"); 
+    const resetBtn = document.getElementById("resetBtn"); 
+ 
+    const today = new Date().toISOString().split("T")[0]; 
+    dateInput.setAttribute("min", today); 
+ 
+    function showResult(input, errorId, message) { 
+        const errorBox = document.getElementById(errorId); 
+        if (message === "") { 
+            errorBox.textContent = ""; 
+            if (input) { 
+                input.classList.remove("invalid"); 
+                input.classList.add("valid"); 
+            } 
+            return true; 
+        } else { 
+            errorBox.textContent = message; 
+            if (input) { 
+                input.classList.remove("valid"); 
+                input.classList.add("invalid"); 
+            } 
+            return false; 
+        } 
+    } 
+ 
+    function checkName() { 
+        const value = fullName.value.trim(); 
+        const pattern = /^[A-Za-z ]+$/; 
+        if (value === "") { 
+            return showResult(fullName, "nameError", "Name is required."); 
+        } 
+        if (value.length < 3) { 
+            return showResult(fullName, "nameError", "Name must have at least 3 letters."); 
+        } 
+        if (!pattern.test(value)) { 
+            return showResult(fullName, "nameError", "Name can contain only letters and spaces."); 
+        } 
+        return showResult(fullName, "nameError", ""); 
+    } 
+ 
+    function checkEmail() { 
+        const value = email.value.trim();  
+ 
+        const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; 
+        if (value === "") { 
+            return showResult(email, "emailError", "Email is required."); 
+        } 
+        if (!pattern.test(value)) { 
+            return showResult(email, "emailError", "Enter a valid email address."); 
+        } 
+        return showResult(email, "emailError", ""); 
+    } 
+ 
+    function checkPhone() { 
+        const value = phone.value.trim(); 
+        const pattern = /^[6-9][0-9]{9}$/; 
+        if (value === "") { 
+            return showResult(phone, "phoneError", "Phone number is required."); 
+        } 
+        if (!pattern.test(value)) { 
+            return showResult(phone, "phoneError", "Enter a valid 10 digit number starting with 6
+9."); 
+        } 
+        return showResult(phone, "phoneError", ""); 
+    } 
+ 
+    function checkService() { 
+        if (service.value === "") { 
+            return showResult(service, "serviceError", "Please select a service."); 
+        } 
+        return showResult(service, "serviceError", ""); 
+    } 
+ 
+    function checkDate() { 
+        if (dateInput.value === "") { 
+            return showResult(dateInput, "dateError", "Please choose a date."); 
+        } 
+        if (dateInput.value < today) { 
+            return showResult(dateInput, "dateError", "Date cannot be in the past."); 
+        } 
+        return showResult(dateInput, "dateError", ""); 
+    } 
+ 
+    function checkDetails() { 
+        const value = details.value.trim(); 
+        if (value === "") { 
+            return showResult(details, "detailsError", "Please describe your issue."); 
+        } 
+        if (value.length < 20) { 
+            return showResult(details, "detailsError", "Write at least 20 characters."); 
+        } 
+        return showResult(details, "detailsError", ""); 
+    } 
+ 
+    function checkConsent() { 
+        if (!consent.checked) { 
+            return showResult(null, "consentError", "You must agree before submitting."); 
+        } 
+        return showResult(null, "consentError", ""); 
+    } 
+ 
+ 
+    fullName.addEventListener("input", checkName); 
+    email.addEventListener("input", checkEmail); 
+    phone.addEventListener("input", checkPhone); 
+    service.addEventListener("change", checkService); 
+    dateInput.addEventListener("change", checkDate); 
+    consent.addEventListener("change", checkConsent); 
+ 
+    details.addEventListener("input", function () { 
+        counter.textContent = details.value.length + " / 200"; 
+        checkDetails(); 
+    }); 
+    details.setAttribute("maxlength", "200"); 
+ 
+    form.addEventListener("submit", function (event) { 
+        event.preventDefault(); 
+ 
+        const results = [ 
+            checkName(), 
+            checkEmail(), 
+            checkPhone(), 
+            checkService(), 
+            checkDate(), 
+            checkDetails(), 
+            checkConsent() 
+        ]; 
+ 
+        if (results.includes(false)) { 
+            result.style.display = "none"; 
+            return; 
+        } 
+ 
+        result.innerHTML = 
+            "<p><b>Request submitted successfully!</b></p>" + 
+            "<p>Name: " + fullName.value.trim() + "</p>" + 
+            "<p>Email: " + email.value.trim() + "</p>" + 
+            "<p>Phone: " + phone.value.trim() + "</p>" + 
+            "<p>Service: " + service.value + "</p>" + 
+            "<p>Date: " + dateInput.value + "</p>"; 
+        result.style.display = "block"; 
+    }); 
+ 
+    resetBtn.addEventListener("click", function () { 
+        form.reset(); 
+        result.style.display = "none"; 
+        counter.textContent = "0 / 200"; 
+ 
+        const fields = [fullName, email, phone, service, dateInput, details]; 
+        fields.forEach(function (field) { 
+            field.classList.remove("valid"); 
+            field.classList.remove("invalid"); 
+        }); 
+ 
+        const errors = document.querySelectorAll(".error"); 
+        errors.forEach(function (box) { 
+            box.textContent = ""; 
+        }); 
+ 
+}); 
+</script> 
+</body> 
+</html>
